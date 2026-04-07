@@ -1,0 +1,215 @@
+@import "tailwindcss";
+
+/* ===============================
+   BASE DESIGN TOKENS
+   =============================== */
+@layer base {
+  :root {
+    --color-primary: 37, 94, 200;      /* #2C63C9 */
+    --color-secondary: 171, 194, 237;     /* #abc2ed */
+    --color-accent: 32 197 137;      /* #20C589 */
+    --color-muted: 244 247 251;      /* #F4F7FB */
+    --color-destructive: 6, 34, 85;  /* #062255 */
+  }
+}
+
+/* ===============================
+   TAILWIND-LIKE UTILITIES
+   =============================== */
+@layer utilities {
+  /* TEXT COLORS */
+  .text-primary {
+    color: rgb(var(--color-primary));
+  }
+  .text-secondary {
+    color: rgb(var(--color-secondary));
+  }
+  .text-accent {
+    color: rgb(var(--color-accent));
+  }
+  .text-muted {
+    color: rgb(var(--color-muted));
+  }
+  .text-destructive {
+    color: rgb(var(--color-destructive));
+  }
+
+  /* BACKGROUND COLORS */
+  .bg-primary {
+    background-color: rgb(var(--color-primary));
+  }
+  .bg-secondary {
+    background-color: rgb(var(--color-secondary));
+  }
+  .bg-accent {
+    background-color: rgb(var(--color-accent));
+  }
+  .bg-muted {
+    background-color: rgb(var(--color-muted));
+  }
+  .bg-destructive {
+    background-color: rgb(var(--color-destructive));
+  }
+
+  /* BORDER COLORS */
+  .border-primary {
+    border-color: rgb(var(--color-primary));
+  }
+  .border-secondary {
+    border-color: rgb(var(--color-secondary));
+  }
+  .border-accent {
+    border-color: rgb(var(--color-accent));
+  }
+  .border-destructive {
+    border-color: rgb(var(--color-destructive));
+  }
+}
+
+/* ===============================
+   ANIMATIONS
+   =============================== */
+@keyframes slide-left {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+@keyframes slide-right {
+  from { transform: translateX(-50%); }
+  to { transform: translateX(0); }
+}
+
+.animate-slide-left {
+  animation: slide-left 20s linear infinite;
+}
+
+.animate-slide-right {
+  animation: slide-right 20s linear infinite;
+}
+
+/* Responsive menu */
+@keyframes slide-in {
+  from { transform: translateX(100%); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+
+.animate-slide-in {
+  animation: slide-in 0.4s ease forwards;
+}
+
+/* ===============================
+   SCROLLBAR UTILITIES
+   =============================== */
+.no-scrollbar::-webkit-scrollbar,
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.no-scrollbar,
+.hide-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* ===============================
+   FONTS
+   =============================== */
+.font-inter {
+  font-family: var(--font-inter);
+}
+
+/* ===============================
+   OUTLINED TEXT
+   =============================== */
+.text-outline {
+  color: transparent;
+  -webkit-text-stroke: 1.4px rgba(255, 255, 255, 0.95);
+  text-stroke: 1.4px rgba(255, 255, 255, 0.95);
+  letter-spacing: 0.045em;
+  line-height: 1.25;
+  text-rendering: geometricPrecision;
+}
+
+
+/* ====================================
+animate-border-spin
+===================================== */
+
+@keyframes border-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-border-spin {
+  animation: border-spin 4s linear infinite;
+}
+
+
+
+@keyframes border-orbit {
+  0% {
+    top: -5px;
+    left: -5px;
+  }
+  25% {
+    top: -5px;
+    left: calc(100% - 5px);
+  }
+  50% {
+    top: calc(100% - 5px);
+    left: calc(100% - 5px);
+  }
+  75% {
+    top: calc(100% - 5px);
+    left: -5px;
+  }
+  100% {
+    top: -5px;
+    left: -5px;
+  }
+}
+
+.animate-border-orbit {
+  animation: border-orbit 3s linear infinite;
+}
+
+
+@keyframes spinSlow {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-spin-slow {
+  animation: spinSlow 12s linear infinite;
+}
+
+
+.bg-grid-map {
+  background-image: 
+    linear-gradient(to right, rgba(59, 130, 246, 0.1) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(59, 130, 246, 0.1) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+
+
+.bg-grid-neural {
+  background-image: 
+    radial-gradient(circle at 25% 25%, rgba(59, 130, 246, 0.1) 0%, transparent 50%),
+    radial-gradient(circle at 75% 75%, rgba(6, 182, 212, 0.1) 0%, transparent 50%);
+  background-size: 100% 100%;
+}
+
+.form-input {
+  @apply w-full rounded-xl bg-white/90 px-4 py-3 text-sm text-gray-900
+         placeholder-gray-500 outline-none
+         focus:ring-2 focus:ring-[#abc2ed]
+         transition-all duration-200;
+}
