@@ -6,7 +6,7 @@ import { X, ShieldCheck, Loader2, ChevronRight, Tag } from "lucide-react";
 import usePaypal                                     from "../../hooks/usePaypal";
 import { PAYPAL_CURRENCIES, getSymbol, formatAmount } from "../../lib/currencies.js";
 
-const TAX_RATE = 0.05;
+const TAX_RATE = 0.10;
 
 // Local quick-calc for the form step preview (no promo applied yet)
 const calcBreakdown = (raw) => {
