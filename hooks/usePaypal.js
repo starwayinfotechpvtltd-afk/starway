@@ -28,10 +28,10 @@ const loadPaypalScript = (currency = "USD") =>
     // Different currency — must remove and reload (PayPal SDK is currency-scoped)
     if (existing) removePaypalScript();
 
-    const script  = document.createElement("script");
-    script.id     = "paypal-sdk";
+    const script   = document.createElement("script");
+    script.id      = "paypal-sdk";
     // components=buttons limits what loads — faster + fixes currency issues
-    script.src    = `https://www.paypal.com/sdk/js?client-id=${CLIENT_ID}&currency=${currency}&intent=capture&components=buttons`;
+    script.src     = `https://www.paypal.com/sdk/js?client-id=${CLIENT_ID}&currency=${currency}&intent=capture&components=buttons`;
     script.onload  = () => resolve(true);
     script.onerror = () => resolve(false);
     document.body.appendChild(script);
@@ -40,23 +40,27 @@ const loadPaypalScript = (currency = "USD") =>
 // ─── Hook ─────────────────────────────────────────────────────────────────────
 
 const usePaypal = () => {
-  const [loading, setLoading] = useState(false);
-  const [error,   setError]   = useState(null);
+  const [loading,         setLoading]         = useState(false);
+  const [error,           setError]           = useState(null);
+  // FIX: expose the server-side breakdown so the UI can show promo-adjusted prices
+  const [serverBreakdown, setServerBreakdown] = useState(null);
   const containerRef = useRef(null);
 
   const renderButtons = useCallback(async ({
     amount,
-    currency       = "USD",
-    description    = "Payment",
-    promo_code     = null,    // ← promo code support added
-    customer_name  = "",
-    customer_email = "",
+    currency        = "USD",
+    description     = "Payment",
+    promo_code      = null,
+    customer_name   = "",
+    customer_email  = "",
     onSuccess,
     onFailure,
     onCancel,
+    onOrderCreated, // ← NEW: called with server breakdown after order is created
   }) => {
     setLoading(true);
     setError(null);
+    setServerBreakdown(null);
 
     try {
       if (!CLIENT_ID) {
@@ -87,7 +91,7 @@ const usePaypal = () => {
         },
 
         // ── Step 1: Create order on YOUR server ──────────────────────────────
-        // Server applies 5% tax + validates promo code
+        // Server applies 5% tax + validates promo code + returns breakdown
         createOrder: async () => {
           const res = await fetch(`${API_URL}/api/paypal/create-order`, {
             method:  "POST",
@@ -109,6 +113,13 @@ const usePaypal = () => {
           }
 
           console.log(`✅ PayPal order created: ${data.data.order_id}`);
+
+          // FIX: store & expose the server-side breakdown (includes promo discounts)
+          if (data.data?.breakdown) {
+            setServerBreakdown(data.data.breakdown);
+            onOrderCreated?.(data.data.breakdown);
+          }
+
           return data.data.order_id; // PayPal SDK needs just the order ID
         },
 
@@ -124,14 +135,15 @@ const usePaypal = () => {
 
             const data = await res.json();
 
-            // ── Verify capture was truly successful ───────────────────────────
+            // FIX: verify both res.ok AND data.success AND status === "captured"
             if (!res.ok || !data.success) {
               throw new Error(data.message || "Payment capture failed");
             }
 
-            // Double-check status from server response
             if (data.data?.status !== "captured") {
-              throw new Error(`Payment status: ${data.data?.status || "unknown"} — not captured`);
+              throw new Error(
+                `Payment status: ${data.data?.status || "unknown"} — not captured`
+              );
             }
 
             console.log(`✅ PayPal payment captured: ${data.data.capture_id}`);
@@ -169,7 +181,7 @@ const usePaypal = () => {
     }
   }, []);
 
-  return { renderButtons, containerRef, loading, error };
+  return { renderButtons, containerRef, loading, error, serverBreakdown };
 };
 
 export default usePaypal;
