@@ -43,7 +43,7 @@ const projectsData = {
       category: "Brand Design",
       description:
         "Complete brand identity including logo, color palette, and brand guidelines for a tech startup.",
-      image: "/images/campain/portfolio/p-1.png",
+      image: "/images/homePortfolio/nscPortfolio.jpeg",
       tags: ["Logo Design", "Brand Guidelines", "Visual Identity"],
       results: "250% increase in brand recognition",
     },
@@ -53,7 +53,7 @@ const projectsData = {
       category: "Restaurant Branding",
       description:
         "Full restaurant rebrand with menu design, signage, and packaging materials.",
-      image: "/elegant-restaurant-cafe-branding-design.jpg",
+      image: "/images/homePortfolio/bugSpPortfolio.jpeg",
       tags: ["Rebrand", "Packaging", "Print Design"],
       results: "40% rise in customer footfall",
     },
@@ -63,7 +63,7 @@ const projectsData = {
       category: "Health & Wellness",
       description:
         "Modern wellness brand identity for a fitness and nutrition coaching business.",
-      image: "/fitness-wellness-brand-logo-colorful.jpg",
+      image: "/images/homePortfolio/justchillPortfolio.jpeg",
       tags: ["Wellness", "Fitness", "Brand Identity"],
       results: "3x increase in member signups",
     },
@@ -107,7 +107,7 @@ const projectsData = {
       category: "Local SEO",
       description:
         "Increased local visibility for a dental clinic through targeted local SEO strategies.",
-      image: "/seo-analytics-growth-chart-dashboard.jpg",
+      image: "/images/portfolio/nearmeIntePortfolio01.webp",
       tags: ["Local SEO", "Google My Business", "Citations"],
       results: "250% increase in organic traffic",
     },
@@ -117,7 +117,7 @@ const projectsData = {
       category: "Technical SEO",
       description:
         "Boosted organic traffic for an online fashion store with comprehensive SEO audit.",
-      image: "/website-traffic-growth-seo-analytics.jpg",
+      image: "/images/portfolio/bodygurdPortfolio01.webp",
       tags: ["Technical SEO", "Content Strategy", "Link Building"],
       results: "180% traffic growth in 6 months",
     },
@@ -127,7 +127,7 @@ const projectsData = {
       category: "Enterprise SEO",
       description:
         "Achieved first-page rankings for 50+ competitive keywords for B2B software company.",
-      image: "/seo-ranking-position-keywords-search-results.jpg",
+      image: "/images/portfolio/nearmeIntePortfolio04.webp",
       tags: ["Enterprise SEO", "Content Marketing", "Authority Building"],
       results: "Top 3 ranking for main keywords",
     },
@@ -139,7 +139,7 @@ const projectsData = {
       category: "Social Media Marketing",
       description:
         "Created engaging social media content that increased followers and bookings significantly.",
-      image: "/restaurant-food-social-media-post-colorful.jpg",
+      image: "/images/portfolio/bodygurdSocial/bodygurdPortfolioSocial05.webp",
       tags: ["Instagram", "Content Creation", "Food Photography"],
       results: "300% followers increase",
     },
@@ -149,7 +149,7 @@ const projectsData = {
       category: "Influencer Marketing",
       description:
         "Launched new fashion brand with strategic influencer partnerships and campaigns.",
-      image: "/fashion-brand-social-media-campaign-stylish.jpg",
+      image: "/images/portfolio/bodygurdSocial/bodygurdPortfolioSocial02.webp",
       tags: ["Facebook", "Influencer", "Campaign"],
       results: "2M+ reach in 3 months",
     },
@@ -159,7 +159,7 @@ const projectsData = {
       category: "Social Ads",
       description:
         "Generated qualified leads through targeted social media advertising campaigns.",
-      image: "/tech-product-social-media-advertisement-modern.jpg",
+      image: "/images/portfolio/peacedLovelyportfolio01.webp",
       tags: ["LinkedIn", "Lead Generation", "B2B"],
       results: "500+ qualified leads",
     },
