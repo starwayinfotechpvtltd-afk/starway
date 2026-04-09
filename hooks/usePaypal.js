@@ -1,170 +1,196 @@
-  "use client";
+"use client";
 
-  import { useState, useCallback, useRef } from "react";
+import { useState, useCallback, useRef } from "react";
 
-  const API_URL   = process.env.NEXT_PUBLIC_API_URL;
-  const CLIENT_ID = process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID;
+const API_URL   = process.env.NEXT_PUBLIC_API_URL;
+const CLIENT_ID = process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID;
 
-  // ─── Script management ────────────────────────────────────────────────────────
 
-  const removePaypalScript = () => {
+// ─── Script management ────────────────────────────────────────────────────────
+
+const removePaypalScript = () => {
+  const existing = document.getElementById("paypal-sdk");
+  if (existing) existing.remove();
+  try { delete window.paypal; } catch (_) { window.paypal = undefined; }
+};
+
+const loadPaypalScript = (currency = "USD") =>
+  new Promise((resolve) => {
+    if (typeof window === "undefined") return resolve(false);
+
     const existing = document.getElementById("paypal-sdk");
-    if (existing) existing.remove();
-    // Must delete window.paypal so PayPal re-initialises cleanly
-    try { delete window.paypal; } catch (_) { window.paypal = undefined; }
-  };
 
-  const loadPaypalScript = (currency = "USD") =>
-    new Promise((resolve) => {
-      if (typeof window === "undefined") return resolve(false);
+    if (existing && window.paypal && existing.src.includes(`currency=${currency}`)) {
+      return resolve(true);
+    }
 
-      const existing = document.getElementById("paypal-sdk");
+    if (existing) removePaypalScript();
 
-      // Reuse if same currency already loaded
-      if (existing && window.paypal && existing.src.includes(`currency=${currency}`)) {
-        return resolve(true);
+    const script  = document.createElement("script");
+    script.id     = "paypal-sdk";
+    script.src    = `https://www.paypal.com/sdk/js?client-id=${CLIENT_ID}&currency=${currency}&intent=capture&components=buttons`;
+
+    script.onload  = () => resolve(true);
+    script.onerror = () => resolve(false);
+
+    document.body.appendChild(script);
+  });
+
+
+// ─── Hook ─────────────────────────────────────────────────────────────────────
+
+const usePaypal = () => {
+  const [loading, setLoading] = useState(false);
+  const [error,   setError]   = useState(null);
+  const containerRef = useRef(null);
+
+  const renderButtons = useCallback(async ({
+    amount,
+    currency       = "USD",
+    description    = "Payment",
+    promo_code     = null,
+    customer_name  = "",
+    customer_email = "",
+    onSuccess,
+    onFailure,
+    onCancel,
+  }) => {
+
+    setLoading(true);
+    setError(null);
+
+    try {
+      const safeAmount = parseFloat(amount || 0);
+
+      if (!CLIENT_ID) {
+        throw new Error("NEXT_PUBLIC_PAYPAL_CLIENT_ID missing");
       }
 
-      // Different currency — must remove and reload (PayPal SDK is currency-scoped)
-      if (existing) removePaypalScript();
+      const loaded = await loadPaypalScript(currency);
 
-      const script  = document.createElement("script");
-      script.id     = "paypal-sdk";
-      // components=buttons limits what loads — faster + fixes currency issues
-      script.src    = `https://www.paypal.com/sdk/js?client-id=${CLIENT_ID}&currency=${currency}&intent=capture&components=buttons`;
-      script.onload  = () => resolve(true);
-      script.onerror = () => resolve(false);
-      document.body.appendChild(script);
-    });
+      if (!loaded || !window.paypal) {
+        throw new Error("Failed to load PayPal SDK");
+      }
 
-  // ─── Hook ─────────────────────────────────────────────────────────────────────
+      if (!containerRef.current) {
+        throw new Error("PayPal container not mounted");
+      }
 
-  const usePaypal = () => {
-    const [loading, setLoading] = useState(false);
-    const [error,   setError]   = useState(null);
-    const containerRef = useRef(null);
+      containerRef.current.innerHTML = "";
+      setLoading(false);
 
-    const renderButtons = useCallback(async ({
-      amount,
-      currency       = "USD",
-      description    = "Payment",
-      promo_code     = null,    // ← promo code support added
-      customer_name  = "",
-      customer_email = "",
-      onSuccess,
-      onFailure,
-      onCancel,
-    }) => {
-      setLoading(true);
-      setError(null);
+      window.paypal.Buttons({
 
-      try {
-        const safeAmount = parseFloat(amount || 0);
-        if (!CLIENT_ID) {
-          throw new Error("NEXT_PUBLIC_PAYPAL_CLIENT_ID is not set in .env.local");
-        }
+        style: {
+          layout: "vertical",
+          color: "gold",
+          shape: "rect",
+          label: "pay",
+          height: 48,
+        },
 
-        // Load SDK — reloads if currency changed
-        const loaded = await loadPaypalScript(currency);
-        if (!loaded || !window.paypal) {
-          throw new Error("Failed to load PayPal SDK. Check your internet connection.");
-        }
+        // ─────────────────────────────────────────
+        // CREATE ORDER
+        // ─────────────────────────────────────────
+        createOrder: async () => {
 
-        if (!containerRef.current) {
-          throw new Error("PayPal container ref is not attached to a DOM element");
-        }
+          const res = await fetch(`${API_URL}/api/paypal/create-order`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              amount: safeAmount,
+              currency,
+              description,
+              promo_code: promo_code || undefined,
+              customer_name,
+              customer_email,
+            }),
+          });
 
-        // Clear any previously rendered buttons
-        containerRef.current.innerHTML = "";
-        setLoading(false);
+          const data = await res.json();
 
-        window.paypal.Buttons({
-          style: {
-            layout: "vertical",
-            color:  "gold",
-            shape:  "rect",
-            label:  "pay",
-            height: 48,
-          },
+          if (!res.ok || !data.success) {
+            throw new Error(data.message || "Create order failed");
+          }
 
-          // ── Step 1: Create order on YOUR server ──────────────────────────────
-          // Server applies 10% tax + validates promo code
-          createOrder: async () => {
-            const res = await fetch(`${API_URL}/api/paypal/create-order`, {
-              method:  "POST",
+          return data.data.order_id;
+        },
+
+
+        // ─────────────────────────────────────────
+        // CAPTURE ORDER
+        // ─────────────────────────────────────────
+        onApprove: async (approveData) => {
+          setLoading(true);
+
+          try {
+            const res = await fetch(`${API_URL}/api/paypal/capture-order`, {
+              method: "POST",
               headers: { "Content-Type": "application/json" },
               body: JSON.stringify({
-                amount: safeAmount,
-                currency,
-                description,
-                promo_code:     promo_code || undefined,
-                customer_name,
-                customer_email,
+                order_id: approveData.orderID
               }),
             });
 
             const data = await res.json();
 
+            console.log("PAYPAL CAPTURE RESPONSE:", data);
+
             if (!res.ok || !data.success) {
-              throw new Error(data.message || "Failed to create PayPal order");
+              throw new Error(data.message || "Capture failed");
             }
 
-            console.log(`✅ PayPal order created: ${data.data.order_id}`);
-            return data.data.order_id; // PayPal SDK needs just the order ID
-          },
+            const capture = data.data;
 
-          // ── Step 2: Capture payment after user approves ───────────────────────
-onApprove: async (approveData) => {
-  setLoading(true);
-  try {
-    const res = await fetch(`${API_URL}/api/paypal/capture-order`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ order_id: approveData.orderID }),
-    });
+            // Normalize response for UI
+            const formatted = {
+              capture_id: capture?.id,
+              status: capture?.status,
+              amount: capture?.amount?.value
+            };
 
-    const data = await res.json();
+            onSuccess?.(formatted);
 
-    if (!res.ok || !data.success) {
-      throw new Error(data.message || "Payment capture failed");
+          } catch (err) {
+            console.error("PayPal capture error:", err);
+            setError(err.message);
+            onFailure?.(err);
+          } finally {
+            setLoading(false);
+          }
+        },
+
+
+        onCancel: () => {
+          setLoading(false);
+          onCancel?.();
+        },
+
+        onError: (err) => {
+          const msg = err?.message || "PayPal error";
+          console.error("PayPal SDK error:", msg);
+          setError(msg);
+          setLoading(false);
+          onFailure?.(new Error(msg));
+        },
+
+      }).render(containerRef.current);
+
+    } catch (err) {
+      console.error("usePaypal error:", err);
+      setError(err.message);
+      setLoading(false);
+      onFailure?.(err);
     }
 
-    console.log(`✅ PayPal payment captured`);
-    onSuccess?.(data.data);
+  }, []);
 
-  } catch (captureErr) {
-    console.error("❌ PayPal capture error:", captureErr.message);
-    setError(captureErr.message);
-    onFailure?.(captureErr);
-  } finally {
-    setLoading(false);
-  }
-},
-
-          onCancel: () => {
-            setLoading(false);
-            onCancel?.();
-          },
-
-          onError: (err) => {
-            setLoading(false);
-            const msg = err?.message || "PayPal encountered an error";
-            console.error("❌ PayPal SDK error:", msg);
-            setError(msg);
-            onFailure?.(new Error(msg));
-          },
-
-        }).render(containerRef.current);
-
-      } catch (err) {
-        console.error("❌ usePaypal error:", err.message);
-        setError(err.message);
-        setLoading(false);
-        onFailure?.(err);
-      }
-    }, []);
-
-    return { renderButtons, containerRef, loading, error };
+  return {
+    renderButtons,
+    containerRef,
+    loading,
+    error
   };
+};
 
-  export default usePaypal;
+export default usePaypal;
