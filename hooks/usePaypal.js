@@ -45,7 +45,7 @@
     const containerRef = useRef(null);
 
     const renderButtons = useCallback(async ({
-      amount: parseFloat(amount || 0),
+      amount,
       currency       = "USD",
       description    = "Payment",
       promo_code     = null,    // ← promo code support added
@@ -59,6 +59,7 @@
       setError(null);
 
       try {
+        const safeAmount = parseFloat(amount || 0);
         if (!CLIENT_ID) {
           throw new Error("NEXT_PUBLIC_PAYPAL_CLIENT_ID is not set in .env.local");
         }
@@ -87,13 +88,13 @@
           },
 
           // ── Step 1: Create order on YOUR server ──────────────────────────────
-          // Server applies 5% tax + validates promo code
+          // Server applies 10% tax + validates promo code
           createOrder: async () => {
             const res = await fetch(`${API_URL}/api/paypal/create-order`, {
               method:  "POST",
               headers: { "Content-Type": "application/json" },
               body: JSON.stringify({
-                amount,
+                amount: safeAmount,
                 currency,
                 description,
                 promo_code:     promo_code || undefined,
