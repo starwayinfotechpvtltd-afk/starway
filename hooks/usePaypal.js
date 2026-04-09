@@ -114,38 +114,32 @@
           },
 
           // ── Step 2: Capture payment after user approves ───────────────────────
-          onApprove: async (approveData) => {
-            setLoading(true);
-            try {
-              const res = await fetch(`${API_URL}/api/paypal/capture-order`, {
-                method:  "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ order_id: approveData.orderID }),
-              });
+onApprove: async (approveData) => {
+  setLoading(true);
+  try {
+    const res = await fetch(`${API_URL}/api/paypal/capture-order`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ order_id: approveData.orderID }),
+    });
 
-              const data = await res.json();
+    const data = await res.json();
 
-              // ── Verify capture was truly successful ───────────────────────────
-              if (!res.ok || !data.success) {
-                throw new Error(data.message || "Payment capture failed");
-              }
+    if (!res.ok || !data.success) {
+      throw new Error(data.message || "Payment capture failed");
+    }
 
-              // Double-check status from server response
-              if (data.data?.status !== "captured") {
-                throw new Error(`Payment status: ${data.data?.status || "unknown"} — not captured`);
-              }
+    console.log(`✅ PayPal payment captured`);
+    onSuccess?.(data.data);
 
-              console.log(`✅ PayPal payment captured: ${data.data.capture_id}`);
-              onSuccess?.(data.data);
-
-            } catch (captureErr) {
-              console.error("❌ PayPal capture error:", captureErr.message);
-              setError(captureErr.message);
-              onFailure?.(captureErr);
-            } finally {
-              setLoading(false);
-            }
-          },
+  } catch (captureErr) {
+    console.error("❌ PayPal capture error:", captureErr.message);
+    setError(captureErr.message);
+    onFailure?.(captureErr);
+  } finally {
+    setLoading(false);
+  }
+},
 
           onCancel: () => {
             setLoading(false);
