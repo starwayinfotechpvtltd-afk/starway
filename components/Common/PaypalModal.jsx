@@ -6,7 +6,7 @@ import { X, ShieldCheck, Loader2, ChevronRight } from "lucide-react";
 import usePaypal                           from "../../hooks/usePaypal";
 import { PAYPAL_CURRENCIES, getSymbol, formatAmount } from "../../lib/currencies.js";
 
-const TAX_RATE = 0.05;
+const TAX_RATE = 0.10;
 
 const calcBreakdown = (raw) => {
   const base  = parseFloat(parseFloat(raw || 0).toFixed(2));
@@ -138,7 +138,7 @@ export default function PaypalModal({ isOpen, onClose }) {
                       {step === "pay" ? "Complete Payment" : "Pay via PayPal"}
                     </h2>
                     <p className="text-slate-400 text-xs mt-0.5">
-                      5% tax · All major currencies
+                     10% tax · All major currencies
                     </p>
                   </div>
                 </div>
@@ -251,7 +251,7 @@ export default function PaypalModal({ isOpen, onClose }) {
                             </span>
                           </div>
                           <div className="flex justify-between text-sm">
-                            <span className="text-amber-400">+ Tax (5%)</span>
+                            <span className="text-amber-400">+ Tax (10%)</span>
                             <span className="text-amber-400 font-medium">
                               {formatAmount(breakdown.tax, currency)}
                             </span>
@@ -356,7 +356,7 @@ export default function PaypalModal({ isOpen, onClose }) {
                         <span className="text-white">{formatAmount(breakdown.base, currency)}</span>
                       </div>
                       <div className="flex justify-between text-sm">
-                        <span className="text-amber-400">+ Tax (5%)</span>
+                        <span className="text-amber-400">+ Tax (10%)</span>
                         <span className="text-amber-400">{formatAmount(breakdown.tax, currency)}</span>
                       </div>
                       <div className="h-px bg-slate-600" />
