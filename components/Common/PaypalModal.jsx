@@ -1,14 +1,13 @@
 "use client";
 
-import { useState, useEffect, useRef }              from "react";
-import { motion, AnimatePresence }                   from "framer-motion";
-import { X, ShieldCheck, Loader2, ChevronRight, Tag } from "lucide-react";
-import usePaypal                                     from "../../hooks/usePaypal";
+import { useState, useEffect, useRef }    from "react";
+import { motion, AnimatePresence }         from "framer-motion";
+import { X, ShieldCheck, Loader2, ChevronRight } from "lucide-react";
+import usePaypal                           from "../../hooks/usePaypal";
 import { PAYPAL_CURRENCIES, getSymbol, formatAmount } from "../../lib/currencies.js";
 
-const TAX_RATE = 0.10;
+const TAX_RATE = 0.05;
 
-// Local quick-calc for the form step preview (no promo applied yet)
 const calcBreakdown = (raw) => {
   const base  = parseFloat(parseFloat(raw || 0).toFixed(2));
   const tax   = parseFloat((base * TAX_RATE).toFixed(2));
@@ -17,29 +16,19 @@ const calcBreakdown = (raw) => {
 };
 
 export default function PaypalModal({ isOpen, onClose }) {
-  const [step,           setStep]           = useState("form");
-  const [amount,         setAmount]         = useState("");
-  const [currency,       setCurrency]       = useState("USD");
-  const [name,           setName]           = useState("");
-  const [email,          setEmail]          = useState("");
-  const [description,    setDescription]    = useState("");
-  const [promoCode,      setPromoCode]      = useState("");
-  const [breakdown,      setBreakdown]      = useState(null);  // local preview breakdown
-  const [payBreakdown,   setPayBreakdown]   = useState(null);  // server-confirmed breakdown for pay step
-  const [errorMsg,       setErrorMsg]       = useState("");
-  const [captureData,    setCaptureData]    = useState(null);
+  const [step,        setStep]        = useState("form");
+  const [amount,      setAmount]      = useState("");
+  const [currency,    setCurrency]    = useState("USD");
+  const [name,        setName]        = useState("");
+  const [email,       setEmail]       = useState("");
+  const [description, setDescription] = useState("");
+  const [promoCode,   setPromoCode]   = useState("");   // ← promo code field
+  const [breakdown,   setBreakdown]   = useState(null);
+  const [errorMsg,    setErrorMsg]    = useState("");
+  const [captureData, setCaptureData] = useState(null);
 
   const inputRef = useRef(null);
-
-  // FIX: also destructure serverBreakdown from the hook
-  const {
-    renderButtons,
-    containerRef,
-    loading,
-    error:           paypalError,
-    serverBreakdown,
-  } = usePaypal();
-
+  const { renderButtons, containerRef, loading, error: paypalError } = usePaypal();
   const sym = getSymbol(currency);
 
   // Focus on open
@@ -47,12 +36,11 @@ export default function PaypalModal({ isOpen, onClose }) {
     if (isOpen) {
       setStep("form");
       setErrorMsg("");
-      setPayBreakdown(null);
       setTimeout(() => inputRef.current?.focus(), 120);
     }
   }, [isOpen]);
 
-  // Recalculate local preview breakdown when amount changes
+  // Recalculate breakdown when amount changes
   useEffect(() => {
     const num = parseFloat(amount);
     setBreakdown(num > 0 ? calcBreakdown(num) : null);
@@ -61,7 +49,6 @@ export default function PaypalModal({ isOpen, onClose }) {
   // Reset breakdown + amount when currency changes
   useEffect(() => {
     setBreakdown(null);
-    setPayBreakdown(null);
     setAmount("");
   }, [currency]);
 
@@ -72,78 +59,45 @@ export default function PaypalModal({ isOpen, onClose }) {
     return () => window.removeEventListener("keydown", fn);
   }, [onClose]);
 
-  // FIX: Render PayPal buttons when step = "pay"
-  // - Added renderButtons and breakdown to dependency array (were missing)
-  // - Added onOrderCreated callback to receive server-side breakdown
+  // Render PayPal buttons when step = "pay"
+  // Re-runs if currency or amount changes (handles currency switching)
   useEffect(() => {
-    if (step !== "pay" || !breakdown) return;
-
-    renderButtons({
-      amount:         breakdown.base,       // always send base; server adds tax
-      currency,
-      description:    description || "Starway Web Digital — Payment",
-      promo_code:     promoCode   || undefined,
-      customer_name:  name,
-      customer_email: email,
-
-      // FIX: receive server breakdown (with promo applied) and show it in the UI
-      onOrderCreated: (serverBD) => {
-        setPayBreakdown(serverBD);
-      },
-
-      onSuccess: (data) => {
-        setCaptureData(data);
-        setStep("success");
-      },
-      onFailure: (err) => {
-        setErrorMsg(err.message || "Payment failed. Please try again.");
-        setStep("form");
-      },
-      onCancel: () => setStep("form"),
-    });
-  // FIX: renderButtons and breakdown were missing from deps — caused stale closures
-  }, [step, currency, renderButtons, breakdown]); // eslint-disable-line react-hooks/exhaustive-deps
+    if (step === "pay" && breakdown) {
+      renderButtons({
+        amount:         breakdown.base,
+        currency,                           // ← correct currency passed to SDK
+        description:    description || "Starway Web Digital — Payment",
+        promo_code:     promoCode || undefined, // ← promo code passed to server
+        customer_name:  name,
+        customer_email: email,
+        onSuccess: (data) => {
+          setCaptureData(data);
+          setStep("success");
+        },
+        onFailure: (err) => {
+          setErrorMsg(err.message || "Payment failed. Please try again.");
+          setStep("form");
+        },
+        onCancel: () => setStep("form"),
+      });
+    }
+  }, [step, currency]); // ← re-renders buttons when currency changes
 
   const handleProceed = () => {
     const num = parseFloat(amount);
     if (!num || num < 1)  return setErrorMsg("Please enter a valid amount (minimum 1)");
     if (num > 10000)      return setErrorMsg("Maximum single payment is 10,000");
     setErrorMsg("");
-    setPayBreakdown(null); // reset until server responds
     setStep("pay");
   };
 
   const handleReset = () => {
-    setAmount("");
-    setCurrency("USD");
-    setName("");
-    setEmail("");
-    setDescription("");
-    setPromoCode("");
-    setBreakdown(null);
-    setPayBreakdown(null);
-    setCaptureData(null);
-    setStep("form");
-    setErrorMsg("");
+    setAmount(""); setCurrency("USD"); setName(""); setEmail("");
+    setDescription(""); setPromoCode(""); setBreakdown(null);
+    setCaptureData(null); setStep("form"); setErrorMsg("");
   };
 
-  // The breakdown to show in the pay step:
-  // prefer server-side (has promo applied), fall back to local preview
-  const activeBreakdown = payBreakdown
-    ? {
-        base:  payBreakdown.base_amount,
-        tax:   payBreakdown.tax_payable,
-        total: payBreakdown.final_amount,
-        discount: (payBreakdown.normal_discount || 0) + (payBreakdown.tax_waived || 0),
-        discountLabel: payBreakdown.discount_label || null,
-        hasDiscount:   payBreakdown.has_normal_discount || payBreakdown.has_tax_discount,
-      }
-    : breakdown
-      ? { base: breakdown.base, tax: breakdown.tax, total: breakdown.total, hasDiscount: false }
-      : null;
-
-  const inputCls =
-    "w-full bg-slate-800 border border-slate-600 rounded-xl px-4 py-3 " +
+  const inputCls = "w-full bg-slate-800 border border-slate-600 rounded-xl px-4 py-3 " +
     "text-white text-sm placeholder-slate-400 focus:outline-none " +
     "focus:ring-2 focus:ring-blue-400/60 transition-all duration-200";
 
@@ -152,16 +106,14 @@ export default function PaypalModal({ isOpen, onClose }) {
       {isOpen && (
         <>
           {/* Backdrop */}
-          <motion.div
-            key="pp-bd"
+          <motion.div key="pp-bd"
             initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
             onClick={onClose}
             className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm"
           />
 
           {/* Modal */}
-          <motion.div
-            key="pp-modal"
+          <motion.div key="pp-modal"
             initial={{ opacity: 0, scale: 0.94, y: 20 }}
             animate={{ opacity: 1, scale: 1,    y: 0  }}
             exit={{   opacity: 0, scale: 0.94,  y: 20 }}
@@ -190,10 +142,8 @@ export default function PaypalModal({ isOpen, onClose }) {
                     </p>
                   </div>
                 </div>
-                <button
-                  onClick={onClose}
-                  className="text-slate-400 hover:text-white transition p-1 rounded-lg hover:bg-slate-700"
-                >
+                <button onClick={onClose}
+                  className="text-slate-400 hover:text-white transition p-1 rounded-lg hover:bg-slate-700">
                   <X className="w-5 h-5" />
                 </button>
               </div>
@@ -211,14 +161,12 @@ export default function PaypalModal({ isOpen, onClose }) {
                       <div className="flex justify-between">
                         <span className="text-slate-400">Amount Paid</span>
                         <span className="text-white font-semibold">
-                          {activeBreakdown
-                            ? formatAmount(activeBreakdown.total, currency)
-                            : formatAmount(captureData.amount, captureData.currency || currency)}
+                          {breakdown ? formatAmount(breakdown.total, currency) : ""}
                         </span>
                       </div>
                       <div className="flex justify-between">
                         <span className="text-slate-400">Currency</span>
-                        <span className="text-white">{captureData.currency || currency}</span>
+                        <span className="text-white">{currency}</span>
                       </div>
                       <div className="flex justify-between">
                         <span className="text-slate-400">Capture ID</span>
@@ -229,16 +177,12 @@ export default function PaypalModal({ isOpen, onClose }) {
                     </div>
                   )}
                   <div className="flex gap-3 justify-center">
-                    <button
-                      onClick={handleReset}
-                      className="px-5 py-2.5 bg-slate-700 hover:bg-slate-600 text-white rounded-xl text-sm transition"
-                    >
+                    <button onClick={handleReset}
+                      className="px-5 py-2.5 bg-slate-700 hover:bg-slate-600 text-white rounded-xl text-sm transition">
                       Pay Again
                     </button>
-                    <button
-                      onClick={onClose}
-                      className="px-5 py-2.5 bg-[#003087] hover:bg-[#002070] text-white rounded-xl text-sm transition"
-                    >
+                    <button onClick={onClose}
+                      className="px-5 py-2.5 bg-[#003087] hover:bg-[#002070] text-white rounded-xl text-sm transition">
                       Close
                     </button>
                   </div>
@@ -289,7 +233,7 @@ export default function PaypalModal({ isOpen, onClose }) {
                     </p>
                   </div>
 
-                  {/* Live tax breakdown (local preview, no promo yet) */}
+                  {/* Live tax breakdown */}
                   <AnimatePresence>
                     {breakdown && breakdown.base > 0 && (
                       <motion.div
@@ -330,21 +274,17 @@ export default function PaypalModal({ isOpen, onClose }) {
                       <label className="text-slate-300 text-xs font-semibold mb-1.5 block uppercase tracking-wide">
                         Your Name
                       </label>
-                      <input
-                        type="text" value={name}
+                      <input type="text" value={name}
                         onChange={(e) => setName(e.target.value)}
-                        placeholder="John Doe" className={inputCls}
-                      />
+                        placeholder="John Doe" className={inputCls} />
                     </div>
                     <div>
                       <label className="text-slate-300 text-xs font-semibold mb-1.5 block uppercase tracking-wide">
                         Email
                       </label>
-                      <input
-                        type="email" value={email}
+                      <input type="email" value={email}
                         onChange={(e) => setEmail(e.target.value)}
-                        placeholder="you@example.com" className={inputCls}
-                      />
+                        placeholder="you@example.com" className={inputCls} />
                     </div>
                   </div>
 
@@ -353,11 +293,9 @@ export default function PaypalModal({ isOpen, onClose }) {
                     <label className="text-slate-300 text-xs font-semibold mb-1.5 block uppercase tracking-wide">
                       Payment For (optional)
                     </label>
-                    <input
-                      type="text" value={description}
+                    <input type="text" value={description}
                       onChange={(e) => setDescription(e.target.value)}
-                      placeholder="e.g. SEO Package, Web Design" className={inputCls}
-                    />
+                      placeholder="e.g. SEO Package, Web Design" className={inputCls} />
                   </div>
 
                   {/* Promo Code */}
@@ -365,17 +303,14 @@ export default function PaypalModal({ isOpen, onClose }) {
                     <label className="text-slate-300 text-xs font-semibold mb-1.5 block uppercase tracking-wide">
                       Promo Code (optional)
                     </label>
-                    <div className="relative">
-                      <Tag className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
-                      <input
-                        type="text"
-                        value={promoCode}
-                        onChange={(e) => setPromoCode(e.target.value.toUpperCase())}
-                        placeholder="e.g. SAVE20"
-                        className={`${inputCls} pl-9 tracking-widest uppercase`}
-                        maxLength={30}
-                      />
-                    </div>
+                    <input
+                      type="text"
+                      value={promoCode}
+                      onChange={(e) => setPromoCode(e.target.value.toUpperCase())}
+                      placeholder="e.g. SAVE20"
+                      className={`${inputCls} tracking-widest uppercase`}
+                      maxLength={30}
+                    />
                   </div>
 
                   {/* Error */}
@@ -383,8 +318,7 @@ export default function PaypalModal({ isOpen, onClose }) {
                     {errorMsg && (
                       <motion.p
                         initial={{ opacity: 0, y: -4 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}
-                        className="text-red-400 text-xs text-center"
-                      >
+                        className="text-red-400 text-xs text-center">
                         {errorMsg}
                       </motion.p>
                     )}
@@ -413,38 +347,23 @@ export default function PaypalModal({ isOpen, onClose }) {
               {step === "pay" && (
                 <div className="px-6 py-6">
 
-                  {/* FIX: Show server-confirmed breakdown (with promo) once available,
-                      otherwise show local preview while PayPal order is being created */}
-                  {activeBreakdown && (
+                  {/* Summary */}
+                  {breakdown && (
                     <div className="bg-slate-800 border border-slate-600 rounded-xl
                                     px-4 py-3 space-y-2 mb-5">
                       <div className="flex justify-between text-sm">
                         <span className="text-slate-400">Base Amount</span>
-                        <span className="text-white">{formatAmount(activeBreakdown.base, currency)}</span>
+                        <span className="text-white">{formatAmount(breakdown.base, currency)}</span>
                       </div>
-
-                      {/* FIX: Show discount row only if promo was applied */}
-                      {activeBreakdown.hasDiscount && activeBreakdown.discount > 0 && (
-                        <div className="flex justify-between text-sm">
-                          <span className="text-green-400 flex items-center gap-1">
-                            <Tag className="w-3 h-3" />
-                            {activeBreakdown.discountLabel || "Discount"}
-                          </span>
-                          <span className="text-green-400">
-                            − {formatAmount(activeBreakdown.discount, currency)}
-                          </span>
-                        </div>
-                      )}
-
                       <div className="flex justify-between text-sm">
                         <span className="text-amber-400">+ Tax (5%)</span>
-                        <span className="text-amber-400">{formatAmount(activeBreakdown.tax, currency)}</span>
+                        <span className="text-amber-400">{formatAmount(breakdown.tax, currency)}</span>
                       </div>
                       <div className="h-px bg-slate-600" />
                       <div className="flex justify-between font-bold">
                         <span className="text-white">Total</span>
                         <span className="text-[#009cde] text-lg">
-                          {formatAmount(activeBreakdown.total, currency)}
+                          {formatAmount(breakdown.total, currency)}
                         </span>
                       </div>
                     </div>
