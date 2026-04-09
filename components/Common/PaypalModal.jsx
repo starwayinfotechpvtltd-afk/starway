@@ -324,6 +324,9 @@ export default function PaypalModal({ isOpen, onClose }) {
                     )}
                   </AnimatePresence>
 
+
+
+
                   {/* Proceed button */}
                   <button
                     onClick={handleProceed}
