@@ -1,5 +1,6 @@
 import { Geist, Geist_Mono, Inter } from "next/font/google";
 import "./globals.css";
+import { GoogleAnalytics } from "@next/third-parties/google";
 import Header from "@/components/Common/Header";
 import Footer from "@/components/Common/Footer";
 import MobileBottomTab from "@/components/Common/MobileBottomTab";
@@ -64,11 +65,18 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en" className={inter.variable}>
+      <head>
+        <meta
+          name="google-site-verification"
+          content="moUR4_0t9O9bkPzp9wT3O4u4ergJSm-mFHRUV9C3ONU"
+        />
+      </head>
       <body className="font-inter" style={{ backgroundColor: "#255EC8" }}>
         <Header />
         {children}
         <MobileBottomTab />
         <Footer />
+        <GoogleAnalytics gaId="G-1M2RMMXMZP" />
       </body>
     </html>
   );
