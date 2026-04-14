@@ -1,5 +1,6 @@
 import { Geist, Geist_Mono, Inter } from "next/font/google";
 import "./globals.css";
+import { GoogleAnalytics } from "@next/third-parties/google";
 import Header from "@/components/Common/Header";
 import Footer from "@/components/Common/Footer";
 import MobileBottomTab from "@/components/Common/MobileBottomTab";
@@ -11,12 +12,16 @@ const inter = Inter({
 })
 
 export const metadata = {
+<<<<<<< HEAD
   metadataBase: new URL("https://starwaywebdigital.com"),
 
   title: "Global Digital Marketing Agency | SEO, PPC & Performance Marketing",
+=======
+  title: "Leading Digital Marketing & AI SEO Agency | Starway Web Digital",
+>>>>>>> 6da38a7caa410b762cdfd72367ed1385f945b82a
 
   description:
-    "Results-driven digital marketing agency helping businesses across the US, UK, Australia, Canada, and New Zealand grow with data-driven SEO, high-converting PPC campaigns, social media marketing, and performance-focused web design.",
+    "Drive aggressive growth with Starway Web Digital. We specialize in AI search optimization (AEO), SEO, high-ROI PPC, and web development. Get your free AI visibility audit today!",
 
   alternates: {
     canonical: "/",
@@ -40,9 +45,13 @@ export const metadata = {
   },
 
   openGraph: {
-    title: "Global Digital Marketing Agency | SEO, PPC & Performance Marketing",
+    title: "Leading Digital Marketing & AI SEO Agency | Starway Web Digital",
     description:
+<<<<<<< HEAD
       "Results-driven digital marketing agency helping businesses across the US, UK, Australia, Canada, and New Zealand grow with data-driven SEO, PPC campaigns, and social media marketing.",
+=======
+      "Drive aggressive growth with Starway Web Digital. We specialize in AI search optimization (AEO), SEO, high-ROI PPC, and web development. Get your free AI visibility audit today!",
+>>>>>>> 6da38a7caa410b762cdfd72367ed1385f945b82a
     url: "https://starwaywebdigital.com",
     siteName: "Starway Digital",
     images: [
@@ -59,20 +68,27 @@ export const metadata = {
 
   twitter: {
     card: "summary_large_image",
-    title: "Global Digital Marketing Agency | SEO, PPC & Performance Marketing",
+    title: "Leading Digital Marketing & AI SEO Agency | Starway Web Digital",
     description:
-      "Data-driven SEO, PPC campaigns, and social media marketing for global businesses.",
+      "Drive aggressive growth with Starway Web Digital. We specialize in AI search optimization (AEO), SEO, high-ROI PPC, and web development. Get your free AI visibility audit today!.",
     images: ["/og-image.jpg"],
   },
 };
 export default function RootLayout({ children }) {
   return (
     <html lang="en" className={inter.variable}>
+      <head>
+        <meta
+          name="google-site-verification"
+          content="moUR4_0t9O9bkPzp9wT3O4u4ergJSm-mFHRUV9C3ONU"
+        />
+      </head>
       <body className="font-inter" style={{ backgroundColor: "#255EC8" }}>
         <Header />
         {children}
         <MobileBottomTab />
         <Footer />
+        <GoogleAnalytics gaId="G-1M2RMMXMZP" />
       </body>
     </html>
   );

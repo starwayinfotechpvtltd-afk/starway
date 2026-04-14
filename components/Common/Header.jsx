@@ -377,47 +377,47 @@ function Header() {
     {
       title: "Branding",
       icon: "/images/navServices/branding.png",
-      link: "/services/branding",
+      link: "/services/brand-identity-design",
     },
     {
       title: "PPC Advertising",
       icon: "/images/navServices/ppc.png",
-      link: "/services/ppc",
+      link: "/services/ppc-management-services",
     },
     {
       title: "Social Media Marketing",
       icon: "/images/navServices/socialmedia.png",
-      link: "/services/socialMedia",
+      link: "/services/social-media-marketing",
     },
     {
-      title: "Google Maps & GMB",
+      title: "Local SEO",
       icon: "/images/navServices/graph.png",
-      link: "/services/googleMaps",
+      link: "/services/local-seo",
     },
     {
       title: "Content Marketing",
       icon: "/images/navServices/writer.png",
-      link: "/services/contentMarketing",
+      link: "/services/content-marketing-services",
     },
     {
-      title: "SEO & Local Ranking",
+      title: "SEO",
       icon: "/images/navServices/seo.png",
-      link: "/services/seo",
+      link: "/services/search-engine-optimization",
     },
     {
       title: "UI/UX Design",
       icon: "/images/navServices/webdesign.png",
-      link: "/services/uiUx",
+      link: "/services/ui-ux-design",
     },
     {
       title: "AI Search Optimization",
       icon: "/images/navServices/AI.png",
-      link: "/services/aISearchOptimization",
+      link: "/services/ai-search-optimization",
     },
     {
       title: "Website, App & E-Commerce",
       icon: "/images/navServices/webprogramming.png",
-      link: "/services/web&AppDevelopment",
+      link: "/services/web-and-app-development",
     },
   ];
 
