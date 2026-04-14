@@ -1,6 +1,6 @@
 import { Geist, Geist_Mono, Inter } from "next/font/google";
 import "./globals.css";
-// import { GoogleAnalytics } from "@next/third-parties/google";
+import { GoogleAnalytics } from "@next/third-parties/google";
 import Header from "@/components/Common/Header";
 import Footer from "@/components/Common/Footer";
 import MobileBottomTab from "@/components/Common/MobileBottomTab";
@@ -46,7 +46,7 @@ export const metadata = {
     siteName: "Starway Digital",
     images: [
       {
-        url: "/og-image.jpg",
+        url: "https://starwaywebdigital.com/og-image.jpg",
         width: 1200,
         height: 630,
         alt: "Starway Digital Marketing Agency",
@@ -61,7 +61,7 @@ export const metadata = {
     title: "Leading Digital Marketing & AI SEO Agency | Starway Web Digital",
     description:
       "Drive aggressive growth with Starway Web Digital. We specialize in AI search optimization (AEO), SEO, high-ROI PPC, and web development. Get your free AI visibility audit today!.",
-    images: ["/og-image.jpg"],
+    images: ["https://starwaywebdigital.com/og-image.jpg"],
   },
 };
 export default function RootLayout({ children }) {
@@ -78,7 +78,7 @@ export default function RootLayout({ children }) {
         {children}
         <MobileBottomTab />
         <Footer />
-        {/* <GoogleAnalytics gaId="G-1M2RMMXMZP" /> */}
+        <GoogleAnalytics gaId="G-1M2RMMXMZP" />
       </body>
     </html>
   );

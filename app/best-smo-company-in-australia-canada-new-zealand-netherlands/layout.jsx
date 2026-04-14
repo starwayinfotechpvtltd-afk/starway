@@ -24,7 +24,7 @@ export const metadata = {
 
         images: [
             {
-                url: "/og-image.jpg",
+                url: "https://starwaywebdigital.com/og-image.jpg",
                 width: 1200,
                 height: 630,
                 alt:
@@ -41,7 +41,7 @@ export const metadata = {
         description:
             "Starways Web Digital is the Best SMO Company in Australia, Canada, New Zealand, Netherlands that helps you achieve a strong online presence and grow your brand through result-driven social media marketing strategies.",
 
-        images: ["/og-image.jpg"],
+        images: ["https://starwaywebdigital.com/og-image.jpg"],
     },
 };
 
