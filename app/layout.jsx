@@ -12,14 +12,8 @@ const inter = Inter({
 })
 
 export const metadata = {
-<<<<<<< HEAD
-  metadataBase: new URL("https://starwaywebdigital.com"),
 
-  title: "Global Digital Marketing Agency | SEO, PPC & Performance Marketing",
-=======
   title: "Leading Digital Marketing & AI SEO Agency | Starway Web Digital",
->>>>>>> 6da38a7caa410b762cdfd72367ed1385f945b82a
-
   description:
     "Drive aggressive growth with Starway Web Digital. We specialize in AI search optimization (AEO), SEO, high-ROI PPC, and web development. Get your free AI visibility audit today!",
 
@@ -47,11 +41,8 @@ export const metadata = {
   openGraph: {
     title: "Leading Digital Marketing & AI SEO Agency | Starway Web Digital",
     description:
-<<<<<<< HEAD
       "Results-driven digital marketing agency helping businesses across the US, UK, Australia, Canada, and New Zealand grow with data-driven SEO, PPC campaigns, and social media marketing.",
-=======
-      "Drive aggressive growth with Starway Web Digital. We specialize in AI search optimization (AEO), SEO, high-ROI PPC, and web development. Get your free AI visibility audit today!",
->>>>>>> 6da38a7caa410b762cdfd72367ed1385f945b82a
+
     url: "https://starwaywebdigital.com",
     siteName: "Starway Digital",
     images: [
