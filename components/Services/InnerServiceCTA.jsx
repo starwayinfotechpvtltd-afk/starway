@@ -1,6 +1,7 @@
 "use client"
 
 import { motion } from "framer-motion"
+import { useState, useRef, useEffect } from "react"
 
 export default function FinalServiceCTA({
   icon: Icon,
@@ -11,16 +12,24 @@ export default function FinalServiceCTA({
   challenges = [],
   primaryCta,
   secondaryCta,
-  theme = {
-    from: "from-blue-600",
-    via: "via-indigo-600",
-    to: "to-blue-800",
-  },
 }) {
+  const [open, setOpen] = useState(false)
+  const [selected, setSelected] = useState("Select a challenge")
+  const dropdownRef = useRef()
+
+  // close on outside click
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
+        setOpen(false)
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside)
+    return () => document.removeEventListener("mousedown", handleClickOutside)
+  }, [])
+
   return (
-    <section
-      className={`py-20 px-4 sm:px-6 lg:px-8 bg-secondary`}
-    >
+    <section className="py-20 px-4 sm:px-6 lg:px-8 bg-secondary">
       <div className="max-w-6xl mx-auto">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -29,11 +38,11 @@ export default function FinalServiceCTA({
           viewport={{ once: true }}
         >
           <div className="grid lg:grid-cols-2 gap-12 items-center">
-            
-            {/* LEFT CONTENT */}
+
+            {/* LEFT */}
             <div>
               {Icon && (
-                <div className="hidden  w-20 h-20 rounded-2xl bg-blue-700/20 backdrop-blur-sm md:flex items-center justify-center mb-8">
+                <div className="hidden w-20 h-20 rounded-2xl bg-blue-700/20 backdrop-blur-sm md:flex items-center justify-center mb-8">
                   <Icon className="w-10 h-10 text-destructive" />
                 </div>
               )}
@@ -46,7 +55,6 @@ export default function FinalServiceCTA({
                 {description}
               </p>
 
-              {/* CONTACT INFO (OPTIONAL) */}
               {contactInfo.length > 0 && (
                 <div className="space-y-4 mb-8">
                   {contactInfo.map((item, idx) => (
@@ -66,6 +74,7 @@ export default function FinalServiceCTA({
               </h4>
 
               <form className="space-y-6">
+
                 {/* Business Name */}
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -74,7 +83,7 @@ export default function FinalServiceCTA({
                   <input
                     type="text"
                     placeholder="Enter your business name"
-                    className="w-full px-4 py-3 rounded-lg border border-gray-300focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none"
+                    className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none"
                   />
                 </div>
 
@@ -86,34 +95,52 @@ export default function FinalServiceCTA({
                   <input
                     type="email"
                     placeholder="Enter your email"
-                    className="w-full px-4 py-3 rounded-lg border border-gray-300focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none"
+                    className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none"
                   />
                 </div>
 
-                {/* Challenges */}
-                <div className="hidden md:block">
+                <div ref={dropdownRef} className="relative">
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     Your Biggest Challenge
                   </label>
-                  <select
-                    className="w-full px-4 py-3 rounded-lg border border-gray-300focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none"
+
+                  {/* Trigger */}
+                  <div
+                    onClick={() => setOpen(!open)}
+                    className="w-full px-4 py-3 rounded-lg border border-gray-300 cursor-pointer flex justify-between items-center bg-white"
                   >
-                    <option value="">Select a challenge</option>
-                    {challenges.map((challenge, idx) => (
-                      <option key={idx} value={challenge.value}>
-                        {challenge.label}
-                      </option>
-                    ))}
-                  </select>
+                    <span className="text-gray-700">{selected}</span>
+                    <span className={`text-gray-400 transition ${open ? "rotate-180" : ""}`}>
+                      ▼
+                    </span>
+                  </div>
+
+                  {/* Dropdown */}
+                  {open && (
+                    <div className="absolute bottom-full mb-2 w-full bg-white border border-gray-200 rounded-lg shadow-xl z-[999] max-h-60 overflow-y-auto">
+                      {challenges.map((challenge, idx) => (
+                        <div
+                          key={idx}
+                          onClick={() => {
+                            setSelected(challenge.label)
+                            setOpen(false)
+                          }}
+                          className="px-4 py-3 hover:bg-gray-100 cursor-pointer text-sm"
+                        >
+                          {challenge.label}
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </div>
 
-                {/* ACTION BUTTONS */}
+                {/* BUTTONS */}
                 <div className="flex flex-col sm:flex-row gap-4">
                   <motion.button
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
                     type="submit"
-                    className="flex-1 px-8 py-4 bg-primary text-white rounded-lg font-semibold text-lg inline-flex items-center justify-center gap-2"
+                    className="flex-1 px-8 py-4 bg-primary text-white rounded-lg font-semibold text-lg flex items-center justify-center gap-2"
                   >
                     {primaryCta.icon && <primaryCta.icon className="w-5 h-5" />}
                     {primaryCta.text}
@@ -124,11 +151,9 @@ export default function FinalServiceCTA({
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
                       type="button"
-                      className="flex-1 px-8 py-4 text-destructive bg-gray-100 rounded-lg font-semibold text-lg inline-flex items-center justify-center gap-2"
+                      className="flex-1 px-8 py-4 text-destructive bg-gray-100 rounded-lg font-semibold text-lg flex items-center justify-center gap-2"
                     >
-                      {secondaryCta.icon && (
-                        <secondaryCta.icon className="w-5 h-5" />
-                      )}
+                      {secondaryCta.icon && <secondaryCta.icon className="w-5 h-5" />}
                       {secondaryCta.text}
                     </motion.button>
                   )}
@@ -137,8 +162,10 @@ export default function FinalServiceCTA({
                 <p className="text-gray-500 text-sm text-center">
                   No spam. Your information is safe with us.
                 </p>
+
               </form>
             </div>
+
           </div>
         </motion.div>
       </div>
