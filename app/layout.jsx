@@ -41,8 +41,7 @@ export const metadata = {
   openGraph: {
     title: "Leading Digital Marketing & AI SEO Agency | Starway Web Digital",
     description:
-      "Results-driven digital marketing agency helping businesses across the US, UK, Australia, Canada, and New Zealand grow with data-driven SEO, PPC campaigns, and social media marketing.",
-
+      "Drive aggressive growth with Starway Web Digital. We specialize in AI search optimization (AEO), SEO, high-ROI PPC, and web development. Get your free AI visibility audit today!",
     url: "https://starwaywebdigital.com",
     siteName: "Starway Digital",
     images: [
