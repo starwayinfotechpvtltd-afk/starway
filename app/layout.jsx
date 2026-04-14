@@ -11,10 +11,16 @@ const inter = Inter({
 })
 
 export const metadata = {
+  metadataBase: new URL("https://starwaywebdigital.com"),
+
   title: "Global Digital Marketing Agency | SEO, PPC & Performance Marketing",
 
   description:
     "Results-driven digital marketing agency helping businesses across the US, UK, Australia, Canada, and New Zealand grow with data-driven SEO, high-converting PPC campaigns, social media marketing, and performance-focused web design.",
+
+  alternates: {
+    canonical: "/",
+  },
 
   keywords: [
     "digital marketing agency",
@@ -37,7 +43,7 @@ export const metadata = {
     title: "Global Digital Marketing Agency | SEO, PPC & Performance Marketing",
     description:
       "Results-driven digital marketing agency helping businesses across the US, UK, Australia, Canada, and New Zealand grow with data-driven SEO, PPC campaigns, and social media marketing.",
-    url: "https://yourdomain.com",
+    url: "https://starwaywebdigital.com",
     siteName: "Starway Digital",
     images: [
       {
@@ -51,7 +57,6 @@ export const metadata = {
     type: "website",
   },
 
-
   twitter: {
     card: "summary_large_image",
     title: "Global Digital Marketing Agency | SEO, PPC & Performance Marketing",
@@ -60,7 +65,6 @@ export const metadata = {
     images: ["/og-image.jpg"],
   },
 };
-
 export default function RootLayout({ children }) {
   return (
     <html lang="en" className={inter.variable}>
