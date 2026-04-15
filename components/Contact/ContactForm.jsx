@@ -4,29 +4,32 @@ import { useState } from "react";
 import { Instagram, Mail, MapPin, Phone } from "lucide-react";
 import { Facebook, Linkedin, Youtube, Twitter } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
 const INITIAL = {
-  full_name:        "",
-  phone:            "",
-  email:            "",
-  designation:      "",
-  website_url:      "",
+  full_name: "",
+  phone: "",
+  email: "",
+  designation: "",
+  website_url: "",
   project_overview: "",
 };
 
 export default function ContactSection() {
-  const [form,     setForm]     = useState(INITIAL);
-  const [errors,   setErrors]   = useState({});
-  const [status,   setStatus]   = useState("idle");
+  const [form, setForm] = useState(INITIAL);
+  const [errors, setErrors] = useState({});
+  const [status, setStatus] = useState("idle");
   const [apiError, setApiError] = useState("");
-
+  const { executeRecaptcha } = useGoogleReCaptcha();
   const handleChange = (e) => {
     const { id, value } = e.target;
     setForm((prev) => ({ ...prev, [id]: value }));
     if (errors[id]) setErrors((prev) => ({ ...prev, [id]: undefined }));
   };
+
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -34,21 +37,31 @@ export default function ContactSection() {
     setErrors({});
     setApiError("");
 
-    // All fields sent — designation is now saved in DB
-    const payload = {
-      full_name:        form.full_name.trim(),
-      email:            form.email.trim(),
-      phone:            form.phone.trim(),
-      designation:      form.designation.trim()      || undefined,
-      website_url:      form.website_url.trim()      || undefined,
-      project_overview: form.project_overview.trim() || undefined,
-    };
+    if (!executeRecaptcha) {
+      setApiError("Captcha not ready. Please try again.");
+      setStatus("error");
+      return;
+    }
 
     try {
-      const res  = await fetch(`${API_URL}/api/contact`, {
-        method:  "POST",
+      // 🔥 Generate token
+      const token = await executeRecaptcha("contact_form");
+
+      // All fields sent — designation is now saved in DB
+      const payload = {
+        full_name: form.full_name.trim(),
+        email: form.email.trim(),
+        phone: form.phone.trim(),
+        designation: form.designation.trim() || undefined,
+        website_url: form.website_url.trim() || undefined,
+        project_overview: form.project_overview.trim() || undefined,
+        token, // 👈 ADD THIS
+      };
+
+      const res = await fetch(`${API_URL}/api/contact`, {
+        method: "POST",
         headers: { "Content-Type": "application/json" },
-        body:    JSON.stringify(payload),
+        body: JSON.stringify(payload),
       });
 
       const data = await res.json();
@@ -152,7 +165,7 @@ export default function ContactSection() {
                   <h3 className="text-lg lg:text-xl font-medium text-gray-900 tracking-tight">Visit us</h3>
                   <p className="text-[15px] lg:text-[17px] text-gray-600 leading-relaxed">Come say hello at our office HQ.</p>
                   <p className="text-[15px] font-medium text-gray-900">
-                    UNIT NO. – 1002, Primarc Tower, <br/> Sector V, Kolkata, West Bengal 700091
+                    UNIT NO. – 1002, Primarc Tower, <br /> Sector V, Kolkata, West Bengal 700091
                   </p>
                 </div>
               </div>
@@ -173,10 +186,10 @@ export default function ContactSection() {
             {/* Social icons */}
             <div className="flex gap-3 mt-12">
               {[
-                { icon: <Facebook className="w-5 h-5" />, link: "https://www.facebook.com/starwaywebdigital"  },
+                { icon: <Facebook className="w-5 h-5" />, link: "https://www.facebook.com/starwaywebdigital" },
                 // { icon: <Twitter  className="w-5 h-5" />, link: "https://twitter.com"   },
-                { icon: <Linkedin className="w-5 h-5" />, link: "https://www.linkedin.com/company/starway-web-digital/posts/?feedView=all"  },
-                { icon: <Instagram  className="w-5 h-5" />, link: "https://www.linkedin.com/company/starway-web-digital/posts/?feedView=all"   },
+                { icon: <Linkedin className="w-5 h-5" />, link: "https://www.linkedin.com/company/starway-web-digital/posts/?feedView=all" },
+                { icon: <Instagram className="w-5 h-5" />, link: "https://www.linkedin.com/company/starway-web-digital/posts/?feedView=all" },
               ].map((item, i) => (
                 <a key={i} href={item.link} target="_blank" rel="noopener noreferrer"
                   className="w-10 h-10 rounded-xl border border-gray-200 flex items-center justify-center text-gray-800 hover:bg-gray-900 hover:text-white transition-all duration-300">

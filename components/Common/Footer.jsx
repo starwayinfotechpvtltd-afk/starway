@@ -52,7 +52,7 @@ export default function Footer() {
           >
             {/* ── LOGO + SOCIAL + PAYMENT ── */}
             <motion.div variants={fadeUp}>
-              <div className="inline-block bg-white rounded-xl p-3 mb-5 shadow-md">
+              <div className=" center inline-block bg-white rounded-xl p-3 mb-5 shadow-md">
                 <Image src="/images/logo.svg" width={180} height={45} alt="Starway logo" />
               </div>
 
@@ -62,24 +62,24 @@ export default function Footer() {
               </p>
 
               {/* SOCIAL */}
-<div className="flex gap-4 mt-6">
-  {socialLinks.map((item, i) => {
-    const Icon = item.icon;
-    return (
-      <motion.a
-        key={i}
-        whileHover={{ scale: 1.15 }}
-        whileTap={{ scale: 0.95 }}
-        href={item.link}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="w-10 h-10 rounded-full bg-blue-600 hover:bg-orange-500 flex items-center justify-center transition-colors duration-200"
-      >
-        <Icon className="w-5 h-5" />
-      </motion.a>
-    );
-  })}
-</div>
+              <div className="flex gap-4 mt-6">
+                {socialLinks.map((item, i) => {
+                  const Icon = item.icon;
+                  return (
+                    <motion.a
+                      key={i}
+                      whileHover={{ scale: 1.15 }}
+                      whileTap={{ scale: 0.95 }}
+                      href={item.link}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="w-10 h-10 rounded-full bg-blue-600 hover:bg-orange-500 flex items-center justify-center transition-colors duration-200"
+                    >
+                      <Icon className="w-5 h-5" />
+                    </motion.a>
+                  );
+                })}
+              </div>
 
               {/* ── PAYMENT METHODS ── */}
               <div className="mt-6">
@@ -207,6 +207,16 @@ export default function Footer() {
                   </div>
                 </div>
               </div>
+
+              <div className="mt-8 flex items-center justify-center">
+                <Image
+                  src="/google-partner.svg"
+                  width={140}
+                  height={60}
+                  alt="Google Partner"
+                  className="bg-white p-2 rounded-md shadow-sm"
+                />
+              </div>
             </motion.div>
           </motion.div>
 
@@ -214,25 +224,25 @@ export default function Footer() {
           <div className="h-px bg-gradient-to-r from-transparent via-blue-400 to-transparent mb-6" />
 
           {/* BOTTOM */}
-            <div className="flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-gray-400">
-              <p>
-                Starway Web Digital © {new Date().getFullYear()} | All Rights Reserved
-              </p>
+          <div className="flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-gray-400">
+            <p>
+              Starway Web Digital © {new Date().getFullYear()} | All Rights Reserved
+            </p>
 
-              <div className="flex gap-6">
-                <Link href="/privacy-policy" className="hover:text-orange-400 transition">
-                  Privacy Policy
-                </Link>
+            <div className="flex gap-6">
+              <Link href="/privacy-policy" className="hover:text-orange-400 transition">
+                Privacy Policy
+              </Link>
 
-                <Link href="/refund-policy" className="hover:text-orange-400 transition">
-                  Refund Policy
-                </Link>
+              <Link href="/refund-policy" className="hover:text-orange-400 transition">
+                Refund Policy
+              </Link>
 
-                <Link href="/terms" className="hover:text-orange-400 transition">
-                  Terms & Conditions
-                </Link>
-              </div>
+              <Link href="/terms" className="hover:text-orange-400 transition">
+                Terms & Conditions
+              </Link>
             </div>
+          </div>
         </div>
       </footer>
     </>

@@ -1,91 +1,8 @@
-// "use client";
-
-// import { motion } from "framer-motion";
-
-// export default function HeroLeadForm() {
-//   return (
-//     <motion.div
-//       initial={{ opacity: 0, y: 30 }}
-//       whileInView={{ opacity: 1, y: 0 }}
-//       transition={{ duration: 0.6, ease: "easeOut" }}
-//       viewport={{ once: true }}
-//       className="relative w-full max-w-xl sm:max-w-xl mx-auto sm:px-4"
-//     >
-//       <div className="bg-white/10 backdrop-blur-xl rounded-3xl p-0 lg:p-5 2xl:p-8 px-2 md:px-4 py-6 md:py-8 max-w-4xl mx-auto shadow-lg md:shadow-[0_10px_40px_rgba(0,0,0,0.35)] border border-white/20">
-//         {/* Full Name */}
-//         <input
-//           type="text"
-//           placeholder="Full Name"
-//           className="w-full bg-white/10 border border-white/20 rounded-xl px-5 py-3 text-xs 2xl:text-sm text-white placeholder-white/60 mb-4 focus:outline-none focus:ring-2 focus:ring-white/40"
-//         />
-
-//         {/* Email + Phone */}
-//         <div className="grid md:grid-cols-2 gap-4 mb-4">
-//           <input
-//             type="email"
-//             placeholder="Work Email"
-//             className="bg-white/10 border border-white/20 rounded-xl px-5 py-3 text-xs 2xl:text-sm text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-white/40"
-//           />
-//           <input
-//             type="tel"
-//             placeholder="Phone Number"
-//             className="bg-white/10 border border-white/20 rounded-xl px-5 py-3 text-xs 2xl:text-sm text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-white/40"
-//           />
-//         </div>
-
-//         {/* Project Overview */}
-//         <textarea
-//           rows="3"
-//           placeholder="Provide us with a quick overview of the issues you're dealing with"
-//           className="w-full bg-white/10 border border-white/20 rounded-xl px-5 py-3 text-xs 2xl:text-sm text-white placeholder-white/60 mb-4 focus:outline-none focus:ring-2 focus:ring-white/40 resize-none"
-//         />
-
-//         {/* Website URL */}
-//         <input
-//           type="url"
-//           placeholder="Website Url"
-//           className="w-full bg-white/10 border border-white/20 rounded-xl px-5 py-3 text-xs 2xl:text-sm text-white placeholder-white/60 mb-6 focus:outline-none focus:ring-2 focus:ring-white/40"
-//         />
-
-//         {/* Help Section */}
-//         <h3 className="text-base font-semibold text-white mb-3">
-//           How can we help?
-//         </h3>
-
-//         <div className="grid md:grid-cols-2 gap-3 text-xs 2xl:text-sm mb-6">
-//           {[
-//             "E-Commerce / WooCommerce",
-//             "PPC Advertising",
-//             "Web Design & Development",
-//             "Lead Generation",
-//             "SEO / AEO / GEO",
-//             "Social Media Marketing",
-//           ].map((item, index) => (
-//             <label
-//               key={index}
-//               className="flex items-center gap-2 2xl:gap-3 text-white/80"
-//             >
-//               <input type="checkbox" className="w-4 h-4 accent-white" />
-//               <span>{item}</span>
-//             </label>
-//           ))}
-//         </div>
-
-//         {/* Submit */}
-//         <button className="py-2 px-7 rounded-2xl bg-white text-black text-lg font-normal shadow-lg hover:shadow-xl hover:scale-[1.02] transition-all duration-300">
-//           Submit
-//         </button>
-//       </div>
-//     </motion.div>
-//   );
-// }
-
-
-
 "use client";
 
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
 
 const SERVICES = [
   "E-Commerce / WooCommerce",
@@ -110,7 +27,7 @@ export default function HeroLeadForm() {
   const [errors,  setErrors]  = useState({});
   const [status,  setStatus]  = useState("idle"); // idle | loading | success | error
   const [apiMsg,  setApiMsg]  = useState("");
-
+const { executeRecaptcha } = useGoogleReCaptcha();
   // ─── Handlers ───────────────────────────────────────────────────────────────
 
   const handleChange = (e) => {
@@ -131,45 +48,57 @@ export default function HeroLeadForm() {
 
   // ─── Submit ──────────────────────────────────────────────────────────────────
 
-  const handleSubmit = async () => {
-    setStatus("loading");
-    setErrors({});
-    setApiMsg("");
+const handleSubmit = async () => {
+  setStatus("loading");
+  setErrors({});
+  setApiMsg("");
 
-    try {
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/contact`,
-        {
-          method:  "POST",
-          headers: { "Content-Type": "application/json" },
-          body:    JSON.stringify(form),
-        }
-      );
-
-      const data = await res.json();
-
-      if (!res.ok) {
-        // 422 validation errors — map back to fields
-        if (res.status === 422 && data.errors) {
-          const fieldErrors = {};
-          data.errors.forEach(({ field, message }) => {
-            fieldErrors[field] = message;
-          });
-          setErrors(fieldErrors);
-          setStatus("idle");
-          return;
-        }
-        // Any other error
-        throw new Error(data.message || "Something went wrong");
-      }
-
-      setStatus("success");
-      setForm(INITIAL_FORM);
-    } catch (err) {
-      setApiMsg(err.message || "Failed to submit. Please try again.");
+  try {
+    if (!executeRecaptcha) {
+      setApiMsg("Captcha not ready. Please try again.");
       setStatus("error");
+      return;
     }
-  };
+
+
+    const token = await executeRecaptcha("hero_form");
+
+    const payload = {
+      ...form,
+      token, // 👈 ADD THIS
+    };
+
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_API_URL}/api/contact`,
+      {
+        method:  "POST",
+        headers: { "Content-Type": "application/json" },
+        body:    JSON.stringify(payload),
+      }
+    );
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      if (res.status === 422 && data.errors) {
+        const fieldErrors = {};
+        data.errors.forEach(({ field, message }) => {
+          fieldErrors[field] = message;
+        });
+        setErrors(fieldErrors);
+        setStatus("idle");
+        return;
+      }
+      throw new Error(data.message || "Something went wrong");
+    }
+
+    setStatus("success");
+    setForm(INITIAL_FORM);
+  } catch (err) {
+    setApiMsg(err.message || "Failed to submit. Please try again.");
+    setStatus("error");
+  }
+};
 
   // ─── Field class helper ───────────────────────────────────────────────────
 

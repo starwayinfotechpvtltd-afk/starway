@@ -4,6 +4,7 @@ import { GoogleAnalytics } from "@next/third-parties/google";
 import Header from "@/components/Common/Header";
 import Footer from "@/components/Common/Footer";
 import MobileBottomTab from "@/components/Common/MobileBottomTab";
+import RecaptchaProvider from "@/components/RecaptchaProvider";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -73,13 +74,15 @@ export default function RootLayout({ children }) {
           content="moUR4_0t9O9bkPzp9wT3O4u4ergJSm-mFHRUV9C3ONU"
         />
       </head>
-      <body className="font-inter" style={{ backgroundColor: "#255EC8" }}>
-        <Header />
-        {children}
-        <MobileBottomTab />
-        <Footer />
-        <GoogleAnalytics gaId="G-1M2RMMXMZP" />
-      </body>
+<body className="font-inter" style={{ backgroundColor: "#255EC8" }}>
+  <RecaptchaProvider>
+    <Header />
+    {children}
+    <MobileBottomTab />
+    <Footer />
+    <GoogleAnalytics gaId="G-1M2RMMXMZP" />
+  </RecaptchaProvider>
+</body>
     </html>
   );
 }
