@@ -174,9 +174,9 @@ export default function ContactSection() {
             <div className="flex gap-3 mt-12">
               {[
                 { icon: <Facebook className="w-5 h-5" />, link: "https://www.facebook.com/starwaywebdigital"  },
-                { icon: <Twitter  className="w-5 h-5" />, link: "https://twitter.com"   },
+                // { icon: <Twitter  className="w-5 h-5" />, link: "https://twitter.com"   },
                 { icon: <Linkedin className="w-5 h-5" />, link: "https://www.linkedin.com/company/starway-web-digital/posts/?feedView=all"  },
-                { icon: <Instagram  className="w-5 h-5" />, link: "https://www.instagram.com/starwayweb/"   },
+                { icon: <Instagram  className="w-5 h-5" />, link: "https://www.linkedin.com/company/starway-web-digital/posts/?feedView=all"   },
               ].map((item, i) => (
                 <a key={i} href={item.link} target="_blank" rel="noopener noreferrer"
                   className="w-10 h-10 rounded-xl border border-gray-200 flex items-center justify-center text-gray-800 hover:bg-gray-900 hover:text-white transition-all duration-300">

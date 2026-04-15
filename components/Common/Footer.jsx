@@ -16,6 +16,13 @@ const fadeUp = {
   visible: { opacity: 1, y: 0 },
 };
 
+const socialLinks = [
+  { icon: Linkedin, link: "https://www.linkedin.com/company/starway-web-digital/posts/?feedView=all" },
+  // { icon: Twitter, link: "https://twitter.com/your-profile" },
+  { icon: Facebook, link: "https://www.facebook.com/starwaywebdigital" },
+  { icon: Instagram, link: "https://www.linkedin.com/company/starway-web-digital/posts/?feedView=all" },
+];
+
 export default function Footer() {
   const [showMore, setShowMore] = useState(false);
   const [razorpayModalOpen, setRazorpayModalOpen] = useState(false);
@@ -55,19 +62,24 @@ export default function Footer() {
               </p>
 
               {/* SOCIAL */}
-              <div className="flex gap-4 mt-6">
-                {[Linkedin, Twitter, Facebook, Instagram].map((Icon, i) => (
-                  <motion.a
-                    key={i}
-                    whileHover={{ scale: 1.15 }}
-                    whileTap={{ scale: 0.95 }}
-                    href="#"
-                    className="w-10 h-10 rounded-full bg-blue-600 hover:bg-orange-500 flex items-center justify-center transition-colors duration-200"
-                  >
-                    <Icon className="w-5 h-5" />
-                  </motion.a>
-                ))}
-              </div>
+<div className="flex gap-4 mt-6">
+  {socialLinks.map((item, i) => {
+    const Icon = item.icon;
+    return (
+      <motion.a
+        key={i}
+        whileHover={{ scale: 1.15 }}
+        whileTap={{ scale: 0.95 }}
+        href={item.link}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="w-10 h-10 rounded-full bg-blue-600 hover:bg-orange-500 flex items-center justify-center transition-colors duration-200"
+      >
+        <Icon className="w-5 h-5" />
+      </motion.a>
+    );
+  })}
+</div>
 
               {/* ── PAYMENT METHODS ── */}
               <div className="mt-6">
