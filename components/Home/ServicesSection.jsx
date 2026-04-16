@@ -37,32 +37,32 @@ export default function DigitalMarketingExpertise() {
             <ServiceCardMobile
               icon={MapPin}
               title="Google Maps & GMB"
-              href="/services/googleMaps"
+              href="/services/local-seo"
             />
             <ServiceCardMobile
               icon={PenTool}
               title="Content Marketing"
-              href="/services/contentMarketing"
+              href="/services/content-marketing-services"
             />
             <ServiceCardMobile
               icon={Share2}
               title="Social Media"
-              href="/services/socialMedia"
+              href="/services/social-media-marketing"
             />
             <ServiceCardMobile
               icon={MousePointerClick}
               title="PPC Ads"
-              href="/services/ppc"
+              href="/services/ppc-management-services"
             />
             <ServiceCardMobile
               icon={BarChart3}
               title="SEO Optimization"
-              href="/services/seo"
+              href="/services/search-engine-optimization"
             />
             <ServiceCardMobile
               icon={Code2}
               title="Website Design"
-              href="/services/web&AppDevelopment"
+              href="/services/web-and-app-development"
             />
           </div>
         </div>
@@ -88,7 +88,7 @@ export default function DigitalMarketingExpertise() {
               <ServiceCard
                 icon={MapPin}
                 title="Google Maps & GMB"
-                href="/services/googleMaps"
+                href="/services/local-seo"
               />
             </div>
 
@@ -96,7 +96,7 @@ export default function DigitalMarketingExpertise() {
               <ServiceCard
                 icon={PenTool}
                 title="Content Marketing"
-                href="/services/contentMarketing"
+                href="/services/content-marketing-services"
               />
             </div>
 
@@ -104,7 +104,7 @@ export default function DigitalMarketingExpertise() {
               <ServiceCard
                 icon={Share2}
                 title="Social media Marketing"
-                href="/services/socialMedia"
+                href="/services/social-media-marketing"
               />
             </div>
 
@@ -112,7 +112,7 @@ export default function DigitalMarketingExpertise() {
               <ServiceCard
                 icon={MousePointerClick}
                 title="Pay per click (PPC)"
-                href="/services/ppc"
+                href="/services/ppc-management-services"
               />
             </div>
 
@@ -120,7 +120,7 @@ export default function DigitalMarketingExpertise() {
               <ServiceCard
                 icon={BarChart3}
                 title="SEO, AEO, GEO, LLM Optimization"
-                href="/services/seo"
+                href="/services/search-engine-optimization"
               />
             </div>
 
@@ -128,7 +128,7 @@ export default function DigitalMarketingExpertise() {
               <ServiceCard
                 icon={Code2}
                 title="Website design & Development"
-                href="/services/web&AppDevelopment"
+                href="/services/web-and-app-development"
               />
             </div>
           </div>

@@ -28,7 +28,7 @@ const services = [
     // 👇 Button props
     cta: {
       label: "Explore Branding",
-      href: "/services/branding", // or null if using onClick
+      href: "/services/brand-identity-design", // or null if using onClick
     },
   },
 
@@ -53,7 +53,7 @@ const services = [
     // 👇 Button props
     cta: {
       label: "Explore PPC Advertising",
-      href: "/services/ppc", // or null if using onClick
+      href: "/services/ppc-management-services", // or null if using onClick
     },
   },
   {
@@ -75,7 +75,7 @@ const services = [
     color: "from-purple-500 to-pink-500",
     cta: {
       label: "Explore Social Media Marketing",
-      href: "/services/socialMedia", // or null if using onClick
+      href: "/services/social-media-marketing", // or null if using onClick
     },
   },
   {
@@ -97,7 +97,7 @@ const services = [
     color: "from-orange-500 to-amber-500",
     cta: {
       label: "Explore Google Maps & GMB",
-      href: "/services/googleMaps", // or null if using onClick
+      href: "/services/local-seo", // or null if using onClick
     },
   },
   {
@@ -119,7 +119,7 @@ const services = [
     color: "from-green-500 to-emerald-500",
     cta: {
       label: "Explore Content Marketing",
-      href: "/services/contentMarketing", // or null if using onClick
+      href: "/services/content-marketing-services", // or null if using onClick
     },
   },
   {
@@ -141,7 +141,7 @@ const services = [
     color: "from-indigo-500 to-blue-500",
     cta: {
       label: "Explore SEO Services",
-      href: "/services/seo",
+      href: "/services/search-engine-optimization",
     },
   },
   {
@@ -163,7 +163,7 @@ const services = [
     color: "from-violet-500 to-purple-500",
     cta: {
       label: "Explore UI/UX Design",
-      href: "/services/uiUx",
+      href: "/services/ui-ux-design",
     },
   },
   {
@@ -184,7 +184,7 @@ const services = [
     color: "from-cyan-500 to-teal-500",
     cta: {
       label: "Explore AI Search Optimization",
-      href: "/services/aISearchOptimization",
+      href: "/services/ai-search-optimization",
     },
   },
   {
@@ -206,7 +206,7 @@ const services = [
     color: "from-red-500 to-orange-500",
     cta: {
       label: "Explore Website & E-Commerce",
-      href: "/services/web&AppDevelopment",
+      href: "/services/web-and-app-development",
     },
   },
 ];

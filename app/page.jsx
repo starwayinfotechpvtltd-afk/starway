@@ -55,7 +55,7 @@ export default function Home() {
       {/* About Us Section */}
       <AboutUs />
 
-<OurWorkSection />
+      <OurWorkSection />
       {/* AI Optimization Section */}
       <ScrollOverlayFramer />
 
