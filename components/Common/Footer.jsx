@@ -146,7 +146,7 @@ export default function Footer() {
                     { name: "Plans", link: "/plans" },
                     { name: "About", link: "/about" },
                     { name: "Contact", link: "/contact" },
-                    { name: "Blog", link: "/blog" },
+                    { name: "Blog", link: "/blogs" },
                   ].map((item) => (
                     <li key={item.name}>
                       <Link href={item.link}
@@ -238,7 +238,7 @@ export default function Footer() {
                 Refund Policy
               </Link>
 
-              <Link href="/terms" className="hover:text-orange-400 transition">
+              <Link href="/terms&conditions" className="hover:text-orange-400 transition">
                 Terms & Conditions
               </Link>
             </div>
