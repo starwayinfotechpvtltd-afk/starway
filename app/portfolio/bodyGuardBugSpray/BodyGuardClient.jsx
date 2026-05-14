@@ -4,7 +4,7 @@ import Image from "next/image";
 
 const heroStats = [
   { num: "7X", label: "Facebook Followers Growth" },
-  { num: "6.8%", label: "Instagram Engagement Rate" },
+  { num: "6.9%", label: "Instagram Engagement Rate" },
   { num: "4.5%", label: "Social Conversion Rate" },
   { num: "650%", label: "Website Traffic Growth" },
 ];
