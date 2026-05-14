@@ -165,7 +165,7 @@ export default function ContactSection() {
                   <h3 className="text-lg lg:text-xl font-medium text-gray-900 tracking-tight">Visit us</h3>
                   <p className="text-[15px] lg:text-[17px] text-gray-600 leading-relaxed">Come say hello at our office HQ.</p>
                   <p className="text-[15px] font-medium text-gray-900">
-                    UNIT NO. – 1002, Primarc Tower, <br /> Sector V, Kolkata, West Bengal 700091
+                    59C/ Tiljala Road, JBS Haldane Ave, <br /> Gobra, Kolkata, West Bengal 700046
                   </p>
                 </div>
               </div>

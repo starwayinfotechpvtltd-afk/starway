@@ -50,7 +50,7 @@ export default function RefundPolicyPage() {
               <CalendarDays className="w-5 h-5 text-green-700" />
             </div>
             <p className="text-sm text-green-700 font-medium">Cancellation Window</p>
-            <p className="text-2xl font-bold text-green-800">72 Hours</p>
+            <p className="text-2xl font-bold text-green-800">24 Hours</p>
             <p className="text-xs text-green-600 mt-1">From order placement</p>
           </div>
           <div className="bg-gradient-to-br from-blue-50 to-white p-5 rounded-xl border border-blue-100 shadow-sm">
@@ -106,7 +106,7 @@ export default function RefundPolicyPage() {
                   <div className="w-6 h-6 bg-red-100 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
                     <span className="text-red-600 text-xs font-bold">1</span>
                   </div>
-                  <p>Cancellation requests will be considered only if made within <strong className="text-red-700">72 hours</strong> of placing the order.</p>
+                  <p>Cancellation requests will be considered only if made within <strong className="text-red-700">24 hours</strong> of placing the order.</p>
                 </div>
                 <div className="flex items-start gap-3">
                   <div className="w-6 h-6 bg-red-100 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
@@ -266,7 +266,7 @@ export default function RefundPolicyPage() {
                 <tr>
                   <td className="py-2 px-3">Order cancellation (not processed)</td>
                   <td className="py-2 px-3"><span className="text-green-600">✓ Eligible</span></td>
-                  <td className="py-2 px-3">Within 72 hours</td>
+                  <td className="py-2 px-3">Within 24 hours</td>
                 </tr>
                 <tr>
                   <td className="py-2 px-3">Poor quality / Not as described</td>

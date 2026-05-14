@@ -203,7 +203,7 @@ export default function Footer() {
                   <MapPin className="w-5 h-5 text-orange-400 mt-1 shrink-0" />
                   <div>
                     <p className="font-semibold text-white">India – Head Office</p>
-                    <p>UNIT NO. – 1002, Primarc Tower, Sector V, Kolkata, West Bengal 700091</p>
+                    <p>59C/ Tiljala Road, JBS Haldane Ave, Gobra, Kolkata, West Bengal 700046</p>
                   </div>
                 </div>
               </div>
