@@ -1,16 +1,17 @@
+/** @type {import('next').NextConfig} */
 const nextConfig = {
-  async redirects() {
+  poweredByHeader: false,
+
+  async headers() {
     return [
       {
-        source: "/:path*",
-        has: [
+        source: "/_next/static/:path*",
+        headers: [
           {
-            type: "host",
-            value: "www.starwaywebdigital.com",
+            key: "Cache-Control",
+            value: "public, max-age=31536000, immutable",
           },
         ],
-        destination: "https://starwaywebdigital.com/:path*",
-        permanent: true,
       },
     ];
   },
