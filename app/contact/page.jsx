@@ -66,7 +66,7 @@ export default function Contact() {
 
             <div className="w-full h-[400px] rounded-xl overflow-hidden border">
               <iframe
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3684.091221239338!2d88.4326456!3d22.5756913!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3a0275af84e94b71%3A0xffdab16f56baffe1!2sPrimarc%20Tower!5e0!3m2!1sen!2sin!4v1774250082995!5m2!1sen!2sin"
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3685.0655693213344!2d88.37736760000001!3d22.539216399999997!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3a02733dbb11c841%3A0x69e15d8442c8e9a5!2sStarway%20Web%20Digital!5e0!3m2!1sen!2sin!4v1778838233809!5m2!1sen!2sin"
                 width="100%"
                 height="100%"
                 style={{ border: 0 }}
