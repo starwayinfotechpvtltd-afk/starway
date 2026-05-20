@@ -305,7 +305,7 @@ export default function RefundPolicyPage() {
               className="inline-flex items-center justify-center gap-2 bg-white text-blue-700 hover:bg-blue-50 font-medium px-6 py-2.5 rounded-xl transition-colors"
             >
               <Mail className="w-4 h-4" />
-              support@starwayweb.com
+              support@starwaywebdigital.com
             </a>
             <a 
               href="#" 
