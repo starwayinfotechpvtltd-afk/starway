@@ -10,7 +10,7 @@ import {
 } from "lucide-react";
 import PaymentModal from "./PaymentModal.jsx";   // Razorpay
 import PaypalModal from "./PaypalModal.jsx";    // PayPal
-
+import Link from "next/link";
 const fadeUp = {
   hidden: { opacity: 0, y: 20 },
   visible: { opacity: 1, y: 0 },
@@ -209,14 +209,20 @@ export default function Footer() {
               </div>
 
               <div className="mt-8 flex items-center justify-center">
-                <Image
-                  src="/google-partner.svg"
-                  width={140}
-                  height={60}
-                  alt="Google Partner"
-                  className="bg-white p-2 rounded-md shadow-sm"
-                />
-              </div>
+  <Link
+    href="https://www.google.com/partners/agency?id=3928128957"
+    target="_blank"
+    rel="noopener noreferrer"
+  >
+    <Image
+      src="/google-partner.svg"
+      width={140}
+      height={60}
+      alt="Google Partner"
+      className="bg-white p-2 rounded-md shadow-sm cursor-pointer"
+    />
+  </Link>
+</div>
             </motion.div>
           </motion.div>
 
