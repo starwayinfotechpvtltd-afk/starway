@@ -10,7 +10,7 @@ import {
 } from "lucide-react";
 import PaymentModal from "./PaymentModal.jsx";   // Razorpay
 import PaypalModal from "./PaypalModal.jsx";    // PayPal
-import Link from "next/link";
+
 const fadeUp = {
   hidden: { opacity: 0, y: 20 },
   visible: { opacity: 1, y: 0 },
